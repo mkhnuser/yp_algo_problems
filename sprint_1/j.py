@@ -1,30 +1,21 @@
-# NOTE: Magic.
-def get_least_primes_linear(n):
-    lp = [0] * (n + 1)
-    primes = []
-    for i in range(2, n + 1):
-        if lp[i] == 0:
-            lp[i] = i
-            primes.append(i)
-        for p in primes:
-            x = p * i
-            if (p > lp[i]) or (x > n):
-                break
-            lp[x] = p
-    return primes, lp
-
-
 def solve():
     num = int(input())
-    primes = get_least_primes_linear(10**9)[0]
     res = []
 
-    for prime in primes:
-        q, r = divmod(num, prime)
+    # NOTE: If a number n does not have a divisor less than sqrt(n),
+    # Then it does not have a divisor greater than sqrt(n).
+    n = 2
+    while (n**2) <= num:
+        while num % n == 0:
+            num /= n
+            res.append(int(n))  # NOTE: Convert to int for proper printing.
+        n += 1
 
-        while r == 0:
-            res.append(prime)
-            q, r = divmod(q, prime)
+    # NOTE: Handle a case if THE INITIAL NUMBER num is itself prime
+    # Or you've obtained a prime in the step above.
+    # For example: 13.
+    if num > 1:
+        res.append(int(num))  # NOTE: Convert to int for proper printing.
 
     return " ".join(map(str, res))
 
