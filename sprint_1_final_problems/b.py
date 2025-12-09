@@ -1,7 +1,7 @@
-# https://contest.yandex.ru/contest/22450/run-report/152697581/
+# https://contest.yandex.ru/contest/22450/run-report/152901860/
 
 
-def obtain_maximum_numeric_element_in_a_game_matrix(matrix):
+def obtain_maximum_element(matrix):
     maximum_numeric = 0
 
     for row in matrix:
@@ -31,34 +31,32 @@ def obtain_number_of_numbers(matrix, target):
     return counter
 
 
-def obtain_count():
+def get_count():
     k = int(input())
     matrix = []
+    number_of_rows = 4
 
-    # NOTE: O(1).
-    for _ in range(4):
+    for _ in range(number_of_rows):
         row = list(input())
         row = [int(char) if str.isnumeric(char) else char for char in row]
         matrix.append(row)
 
-    # NOTE: O(1).
-    maximum_numeric = obtain_maximum_numeric_element_in_a_game_matrix(matrix)
+    maximum_numeric = obtain_maximum_element(matrix)
 
     counter = 0
-    maximum_number_of_allowed_key_presses = k * 2
+    max_keypresses = k * 2
 
-    # NOTE: O(maximum_numeric).
     for t in range(1, maximum_numeric + 1):
         number_of_numbers = obtain_number_of_numbers(matrix, t)
 
         if not number_of_numbers:
             continue
 
-        if maximum_number_of_allowed_key_presses >= number_of_numbers:
+        if max_keypresses >= number_of_numbers:
             counter += 1
 
     return counter
 
 
 if __name__ == "__main__":
-    print(obtain_count())
+    print(get_count())

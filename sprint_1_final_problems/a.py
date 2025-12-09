@@ -33,7 +33,7 @@ def go_right_to_left(n, input_list, output_list):
 def compute_distance_to_zeros():
     n = int(input())
     input_list = list(map(int, input().split()))
-    output_list = [0.0 for _ in range(n)]
+    output_list = [0.0] * n
 
     go_left_to_right(n, input_list, output_list)
     go_right_to_left(n, input_list, output_list)
