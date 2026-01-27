@@ -1,13 +1,20 @@
-# https://contest.yandex.ru/contest/23815/run-report/154861547/
+# https://contest.yandex.ru/contest/23815/run-report/154995461/
 #
 # --- ПРИНЦИП РАБОТЫ
 # Алгоритм является in-place-реализацией quick sort.
+# Мы рандомизируем выбор пивота для того, чтобы не иметь квадратичную сложность для массивов вида [1, 2, 3, 4, 5, 6, 7].
+# На каждой рекурсивной итерации алгоритма мы поддерживаем инвариант, что все элементы больше пивота будут после него, а все элементы меньше - до него.
+# Мы поддерживаем этот инвариант путём итерации с обоих концов и делая swap элементов, если они нарушают инвариант.
+# После этого мы рекурсивно сортируем оставшиеся части массива.
 #
 # --- ВРЕМЕННАЯ СЛОЖНОСТЬ
 # O(nlogn), где n - длина массива чисел.
 #
 # --- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ
 # O(1).
+
+
+import random
 
 
 def solve():
@@ -17,7 +24,7 @@ def solve():
         login, problem_count, penalty = input().split()
         data.append(
             (
-                -int(problem_count),  # NOTE: This is top priority.
+                -int(problem_count),
                 int(penalty),
                 login,
             )
@@ -31,6 +38,9 @@ def solve():
 def sort_in_place_using_quick_sort(array, left_index, right_index):
     if left_index >= right_index:
         return array
+
+    pivot_index = random.randint(left_index, right_index)
+    array[left_index], array[pivot_index] = array[pivot_index], array[left_index]
 
     pivot = array[left_index]
     left_pointer = left_index + 1
