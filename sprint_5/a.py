@@ -1,8 +1,6 @@
 import os
 
-
 LOCAL = os.environ.get("REMOTE_JUDGE", "false") != "true"
-
 
 if LOCAL:
 
@@ -13,23 +11,21 @@ if LOCAL:
             self.left = left
 
 
-def solution(root) -> float:
-    return find_maximum_value(root, maximum_value=root.value)
+def solution(root):
+    return find_max_in_binary_tree(root, root.value)
 
 
-def find_maximum_value(node, maximum_value) -> float:
+def find_max_in_binary_tree(node, maximum):
     if node is None:
         return float("-inf")
 
-    current_value = node.value
+    if node.value > maximum:
+        maximum = node.value
 
-    if current_value > maximum_value:
-        maximum_value = current_value
+    left_max = find_max_in_binary_tree(node.left, maximum)
+    right_max = find_max_in_binary_tree(node.right, maximum)
 
-    left_max = find_maximum_value(node.left, maximum_value=maximum_value)
-    right_max = find_maximum_value(node.right, maximum_value=maximum_value)
-
-    return max(left_max, right_max, maximum_value)
+    return max(left_max, maximum, right_max)
 
 
 def test():
@@ -37,7 +33,6 @@ def test():
     node2 = Node(-5)
     node3 = Node(3, node1, node2)
     node4 = Node(2, node3, None)
-    print(solution(node4))
     assert solution(node4) == 3
 
 

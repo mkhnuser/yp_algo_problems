@@ -12,28 +12,24 @@ if LOCAL:
 
 
 def solution(root) -> bool:
-    return recurse(
-        root,
-        float("-inf"),
-        float("inf"),
-    )
+    return recurse_solution(root, float("-inf"), float("+inf"))
 
 
-def recurse(node, lower_bound, upper_bound) -> bool:
-    if not node:
+def recurse_solution(node, lower_bound, upper_bound) -> bool:
+    if node is None:
         return True
 
-    if not (lower_bound < node.value < upper_bound):
+    if node.value <= lower_bound or node.value >= upper_bound:
         return False
 
-    return recurse(
+    return recurse_solution(
         node.left,
-        lower_bound,
-        node.value,
-    ) and recurse(
+        lower_bound=lower_bound,
+        upper_bound=node.value,
+    ) and recurse_solution(
         node.right,
-        node.value,
-        upper_bound,
+        lower_bound=node.value,
+        upper_bound=upper_bound,
     )
 
 
