@@ -1,4 +1,4 @@
-# https://contest.yandex.ru/contest/25070/run-report/157921377/
+# https://contest.yandex.ru/contest/25070/run-report/158130962/
 #
 # --- ПРИНЦИП РАБОТЫ
 # Задача похожа на задачу о поиске пути из лабиринта,
@@ -30,10 +30,14 @@ def explore_dfs(i, j, rows, columns, visited, matrix):
     current_size = 1
 
     # NOTE: Recursively go top, right, bottom, left.
-    current_size += explore_dfs(i + 1, j, rows, columns, visited, matrix)
-    current_size += explore_dfs(i, j + 1, rows, columns, visited, matrix)
-    current_size += explore_dfs(i - 1, j, rows, columns, visited, matrix)
-    current_size += explore_dfs(i, j - 1, rows, columns, visited, matrix)
+    directions = [
+        (i + 1, j),
+        (i, j + 1),
+        (i - 1, j),
+        (i, j - 1),
+    ]
+    for next_i, next_j in directions:
+        current_size += explore_dfs(next_i, next_j, rows, columns, visited, matrix)
 
     return current_size
 
