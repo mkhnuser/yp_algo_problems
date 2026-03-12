@@ -1,4 +1,4 @@
-# https://contest.yandex.ru/contest/25070/run-report/158130962/
+# https://contest.yandex.ru/contest/25070/run-report/158157310/
 #
 # --- ПРИНЦИП РАБОТЫ
 # Задача похожа на задачу о поиске пути из лабиринта,
@@ -18,6 +18,14 @@
 # O(n * m) - в худшем случае наш стек содержит каждый элемент входной матрицы.
 
 
+DIRECTIONS = [
+    (1, 0),
+    (0, 1),
+    (-1, 0),
+    (0, -1),
+]
+
+
 def explore_dfs(i, j, rows, columns, visited, matrix):
     if i < 0 or i >= rows or j < 0 or j >= columns:
         return 0
@@ -30,13 +38,9 @@ def explore_dfs(i, j, rows, columns, visited, matrix):
     current_size = 1
 
     # NOTE: Recursively go top, right, bottom, left.
-    directions = [
-        (i + 1, j),
-        (i, j + 1),
-        (i - 1, j),
-        (i, j - 1),
-    ]
-    for next_i, next_j in directions:
+    for i_shift, j_shift in DIRECTIONS:
+        next_i = i + i_shift
+        next_j = j + j_shift
         current_size += explore_dfs(next_i, next_j, rows, columns, visited, matrix)
 
     return current_size
@@ -71,13 +75,10 @@ def solve():
                     island_size += 1
 
                     # NOTE: Iteratively go top, right, bottom, left.
-                    directions = [
-                        (current_i + 1, current_j),
-                        (current_i, current_j + 1),
-                        (current_i - 1, current_j),
-                        (current_i, current_j - 1),
-                    ]
-                    for next_i, next_j in directions:
+                    for i_shift, j_shift in DIRECTIONS:
+                        next_i = current_i + i_shift
+                        next_j = current_j + j_shift
+
                         if (
                             next_i < 0
                             or next_i >= rows
