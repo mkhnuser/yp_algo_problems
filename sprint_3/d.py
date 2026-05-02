@@ -7,22 +7,17 @@ def main():
     g.sort()
     c.sort()
 
-    counter = 0
+    i = 0
+    j = 0
 
-    # NOTE: g is the subsequence.
-    # and c is the main sequence.
+    # NOTE: Suppose c is the main sequence.
+    while j < len(c) and i < len(g):
+        if g[i] <= c[j]:
+            i += 1
 
-    sub = 0
-    p = 0
+        j += 1
 
-    while p < len(c) and sub < len(g):
-        if g[sub] <= c[p]:
-            counter += 1
-            sub += 1
-
-        p += 1
-
-    return counter
+    return i
 
 
 if __name__ == "__main__":

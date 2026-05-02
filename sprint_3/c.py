@@ -1,20 +1,20 @@
 def solve():
-    sub = input()
-    string = input()
+    sub_string = input()
+    main_string = input()
 
     i = 0
     j = 0
 
-    while j < len(string) and i < len(sub):
-        main_char = string[j]
-        sub_char = sub[i]
+    while i < len(sub_string) and j < len(main_string):
+        sub_string_char = sub_string[i]
+        main_string_char = main_string[j]
 
-        if sub_char == main_char:
+        if main_string_char == sub_string_char:
             i += 1
 
         j += 1
 
-    return i >= len(sub)
+    return i >= len(sub_string)
 
 
 if __name__ == "__main__":

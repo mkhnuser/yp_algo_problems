@@ -1,86 +1,97 @@
-# https://contest.yandex.ru/contest/24810/run-report/157242594/
-#
-# --- ПРИНЦИП РАБОТЫ
-# Классическая реализация максимальной кучи, которая включает в себя:
-# поиск индексов левого и правого потомка, просеивание вниз, построение максимальной кучи и сортировку.
-#
-# Отедельное внимание стоит уделить тому, что мы используем унарный минус перед количеством решенных задач,
-# что позволяет нам сортировать входной массив от меньшего к большему так, как этого требует условие задачи.
-# ЯП Пайтон также помогает нам лаконично сравнимать между собой кортежи, сравнивая элементы слева направо.
-#
-# Сортировка происходит in-place.
-#
-# --- ВРЕМЕННАЯ СЛОЖНОСТЬ
-# O(n * logn), где n - количество элементов. Действительно, мы итерируемся по n элементов и в рамках
-# каждой итерации вызываем sift_down-рутину, которая работает за O(log n) (высота кучи).
-#
-# --- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ
-# O(1) - так как не требуется дополнительного места, т.к. сортировка in-place.
+import math
 
 
-class MaxHeap:
-    def __init__(self, data: list[tuple[int, int, str]]) -> None:
-        self.data = data
-        self.length = len(data)
+class MinHeap:
+    def __init__(self):
+        self.data = []
 
-    def get_left_child_index(self, i):
-        return 2 * i + 1
+    def insert(self, element):
+        self.data.append(element)
+        self._sift_up(len(self.data) - 1)
 
-    def get_right_child_index(self, i):
-        return 2 * i + 2
+    def delete(self):
+        if not self.data:
+            return None
 
-    def sift_down(self, i: int) -> None:
-        L = self.get_left_child_index(i)
-        R = self.get_right_child_index(i)
-        current_value = self.data[i]
+        self.data[0], self.data[len(self.data) - 1] = (
+            self.data[len(self.data) - 1],
+            self.data[0],
+        )
+        out = self.data.pop()
+        self._sift_down(0)
+        return out
 
-        if L < self.length and self.data[L] > current_value:
-            largest_index = L
-        else:
-            largest_index = i
+    def _get_left_child_index(self, index):
+        return 2 * index + 1
 
-        if R < self.length and self.data[R] > self.data[largest_index]:
-            largest_index = R
+    def _get_right_child_index(self, index):
+        return 2 * index + 2
 
-        if largest_index != i:
-            self.data[largest_index], self.data[i] = (
-                self.data[i],
-                self.data[largest_index],
+    def _get_parent_index(self, index):
+        return math.floor((index - 1) / 2)
+
+    def _sift_down(self, index):
+        if index >= len(self.data):
+            return
+
+        smallest_i = index
+        left_i = self._get_left_child_index(index)
+        right_i = self._get_right_child_index(index)
+
+        if left_i < len(self.data) and self.data[left_i] < self.data[smallest_i]:
+            smallest_i = left_i
+        if right_i < len(self.data) and self.data[right_i] < self.data[smallest_i]:
+            smallest_i = right_i
+
+        if smallest_i != index:
+            self.data[smallest_i], self.data[index] = (
+                self.data[smallest_i],
+                self.data[index],
             )
-            self.sift_down(largest_index)
+            self._sift_down(smallest_i)
 
-    def build_max_heap(self) -> None:
-        for i in range(self.length // 2, -1, -1):
-            self.sift_down(i)
+    def _sift_up(self, index):
+        if index <= 0:
+            return
 
-    def heap_sort(self) -> None:
-        self.build_max_heap()
+        parent_index = self._get_parent_index(index)
+        parent_value = self.data[parent_index]
+        current_value = self.data[index]
 
-        for i in range(self.length - 1, 0, -1):
-            self.data[0], self.data[i] = self.data[i], self.data[0]
-            self.length -= 1
-            self.sift_down(0)
+        if current_value < parent_value:
+            self.data[index], self.data[parent_index] = (
+                self.data[parent_index],
+                self.data[index],
+            )
+            self._sift_up(parent_index)
+
+
+def build_heap(array, heap):
+    for el in array:
+        heap.insert(el)
 
 
 def solve():
     n = int(input())
+    array = []
+    heap = MinHeap()
 
-    participants = []
     for _ in range(n):
-        login, number_of_solved_problems, penalty = input().split()
-        participants.append(
-            (
-                -int(number_of_solved_problems),
-                int(penalty),
-                login,
-            )
-        )
+        string = input()
+        login, num_of_solved_problems, penalty = string.split()
+        num_of_solved_problems = -int(num_of_solved_problems)
+        penalty = int(penalty)
+        array.append((num_of_solved_problems, penalty, login))
 
-    max_heap = MaxHeap(participants)
-    max_heap.heap_sort()
+    build_heap(array, heap)
+    output = []
 
-    for participant in participants:
-        print(participant[2])
+    while (tp := heap.delete()) is not None:
+        output.append((tp[-1]))
+
+    # NOTE: Does not work.
+    for o in output:
+        print(o)
 
 
 if __name__ == "__main__":

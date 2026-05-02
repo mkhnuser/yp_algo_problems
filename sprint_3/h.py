@@ -16,7 +16,6 @@ def compare_by_concatenation(a, b):
 def solve():
     n = int(input())
     numbers = input().split()
-    # NOTE: The easies way to use comparison function.
     numbers.sort(key=cmp_to_key(compare_by_concatenation))
     return "".join(numbers)
 

@@ -1,29 +1,37 @@
-import itertools as it
-
-
 def solve():
     mapping = {
-        "2": {"a", "b", "c"},
-        "3": {"d", "e", "f"},
-        "4": {"g", "h", "i"},
-        "5": {"j", "k", "l"},
-        "6": {"m", "n", "o"},
-        "7": {"p", "q", "r", "s"},
-        "8": {"t", "u", "v"},
-        "9": {"w", "x", "y", "z"},
+        "2": ["a", "b", "c"],
+        "3": ["d", "e", "f"],
+        "4": ["g", "h", "i"],
+        "5": ["j", "k", "l"],
+        "6": ["m", "n", "o"],
+        "7": ["p", "q", "r", "s"],
+        "8": ["t", "u", "v"],
+        "9": ["w", "x", "y", "z"],
     }
-    string = input()
+    input_string = input()
+    output = []
+    recurse_solution(
+        input_string, "", mapping, output, terminator_length=len(input_string)
+    )
+    return output
 
-    prod = mapping[string[0]]
-    for i in range(len(string) - 1):
-        pairs = it.product(prod, mapping[string[i + 1]])
-        transformation_genexp = ("".join(tuple_) for tuple_ in pairs)
-        prod = transformation_genexp
 
-    res = ["".join(item) for item in prod]
-    res.sort()
-    return " ".join(res)
+def recurse_solution(input_string, current_string, mapping, output, terminator_length):
+    if len(current_string) == terminator_length:
+        output.append(current_string)
+        return
+
+    for i in range(len(input_string)):
+        for current_char in mapping[input_string[i]]:
+            recurse_solution(
+                input_string[i + 1 :],
+                current_string + current_char,
+                mapping,
+                output,
+                terminator_length,
+            )
 
 
 if __name__ == "__main__":
-    print(solve())
+    print(*solve())

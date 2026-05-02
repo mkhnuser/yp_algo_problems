@@ -1,35 +1,36 @@
 def solve():
+    intervals = []
+
     n = int(input())
-    matrix = []
-
     for _ in range(n):
-        row = list(map(int, input().split()))
-        matrix.append(row)
+        string = input()
+        interval = list(map(int, string.split()))
+        intervals.append(interval)
 
-    matrix.sort()
+    intervals.sort()
 
-    if not matrix:
-        return []
+    output = []
+    output.append(intervals[0])
 
-    # NOTE: Consider this: [[2, 3], [6, 10], [7, 8], [7, 8]].
+    for interval_index in range(1, len(intervals)):
+        current_interval = intervals[interval_index]
+        previous_interval = output.pop()
 
-    output = [matrix[0]]
+        current_start, current_end = current_interval
+        previous_start, previous_end = previous_interval
 
-    for start, end in matrix[1:]:
-        latest_output = output[-1]
-        latest_start, latest_end = latest_output
-
-        if start <= latest_end:
-            # NOTE: An overlap has been found, so carefully merge.
-            latest_output[0] = min(start, latest_start)
-            latest_output[1] = max(end, latest_end)
+        if current_start <= previous_end:
+            new_start = previous_start
+            new_end = max(previous_end, current_end)
+            new_interval = [new_start, new_end]
+            output.append(new_interval)
         else:
-            # NOTE: start > latest_end, so no overlapping here, just append an interval.
-            output.append([start, end])
+            output.append(previous_interval)
+            output.append(current_interval)
 
     return output
 
 
 if __name__ == "__main__":
-    for interval in solve():
-        print(" ".join(map(str, interval)))
+    for output in solve():
+        print(*output)
