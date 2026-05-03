@@ -35,7 +35,46 @@ def solve_recursively():
     print(*output_list)
 
 
-def solve_visited_set():
+def solve_visited_set_recursively():
+    # NOTE: Hack your way through the limit.
+    sys.setrecursionlimit(200000)
+
+    n, m = map(int, input().split())
+    adjacency_list = {}
+
+    for _ in range(m):
+        v, u = map(int, input().split())
+
+        if v not in adjacency_list:
+            adjacency_list[v] = []
+        adjacency_list[v].append(u)
+
+        if u not in adjacency_list:
+            adjacency_list[u] = []
+        adjacency_list[u].append(v)
+
+    s = int(input())
+    output_list = []
+
+    visited = set()
+    visited.add(s)
+
+    for value in adjacency_list.values():
+        value.sort()
+
+    def dfs(v):
+        output_list.append(v)
+
+        for neighbor in adjacency_list.get(v, []):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                dfs(neighbor)
+
+    dfs(s)
+    return output_list
+
+
+def solve_visited_set_iteratively():
     n, m = map(int, input().split())
     mapping = defaultdict(list)
 
