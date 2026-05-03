@@ -1,37 +1,36 @@
 from collections import defaultdict
 
 
-def solve():
+def solve_recursively():
     n, m = map(int, input().split())
     mapping = defaultdict(list)
 
     for _ in range(m):
-        start, end = map(int, input().split())
-        mapping[start].append(end)
+        u, v = map(int, input().split())
+        mapping[u].append(v)
 
-    # NOTE: Populate isolated nodes.
+    colors = ["white" for _ in range(n)]
+    output = []
+
     for i in range(1, n + 1):
         if i not in mapping:
+            # NOTE: i has no children, so to speak.
             mapping[i]
 
-    # NOTE: Topological sorting of a DAG is a sorting by leave time reversed.
-    colors = ["white" for _ in range(n)]
-    output: list[int] = []
+    def dfs(s):
+        colors[s - 1] = "gray"
 
-    def dfs(v):
-        colors[v - 1] = "gray"
+        for neighbor in mapping[s]:
+            if colors[neighbor - 1] == "white":
+                dfs(neighbor)
 
-        for adjacent_vertex in mapping[v]:
-            if colors[adjacent_vertex - 1] == "white":
-                dfs(adjacent_vertex)
-
-        colors[v - 1] = "black"
-        output.append(v)
+        colors[s - 1] = "black"
+        output.append(s)
 
     def iterate():
-        for v in mapping:
-            if colors[v - 1] == "white":
-                dfs(v)
+        for i in range(1, n + 1):
+            if colors[i - 1] == "white":
+                dfs(i)
 
     iterate()
     output.reverse()
@@ -39,4 +38,4 @@ def solve():
 
 
 if __name__ == "__main__":
-    solve()
+    solve_recursively()

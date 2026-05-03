@@ -2,43 +2,35 @@ from collections import defaultdict
 from queue import Queue
 
 
-def solve():
+def find_min_distance():
     n, m = map(int, input().split())
     mapping = defaultdict(list)
 
     for _ in range(m):
         u, v = map(int, input().split())
-        mapping[v].append(u)
         mapping[u].append(v)
+        mapping[v].append(u)
 
     s, t = map(int, input().split())
 
-    colors = ["white" for _ in range(n)]
-    distances: list[None | int] = [None for _ in range(n)]
-    parents: list[None | int] = [None for _ in range(n)]
-
     q = Queue()
     q.put(s)
-    colors[s - 1] = "gray"
+    colors = ["white" for _ in range(n)]
+    distances: list[int | None] = [None for _ in range(n)]
     distances[s - 1] = 0
-    parents[s - 1] = None
+    # NOTE: To build path, you might want to use parents array.
 
-    # NOTE: A graph is not necessarily connected!
-    # Therefore, some distances won't be calculated.
+    while q.qsize() > 0:
+        v = q.get()
 
-    while not q.empty():
-        c = q.get()
+        for neighbor in mapping[v]:
+            if colors[neighbor - 1] == "white":
+                colors[neighbor - 1] = "grey"
+                distances[neighbor - 1] = distances[v - 1] + 1
+                q.put(neighbor)
 
-        for adj in mapping[c]:
-            if not colors[adj - 1] == "white":
-                continue
-
-            q.put(adj)
-            colors[adj - 1] = "gray"
-            distances[adj - 1] = distances[c - 1] + 1
-            parents[adj - 1] = c
-
-        colors[c - 1] = "black"
+        colors[v - 1] = "black"
+        q.task_done()
 
     if distances[t - 1] is None:
         print(-1)
@@ -47,4 +39,4 @@ def solve():
 
 
 if __name__ == "__main__":
-    solve()
+    find_min_distance()

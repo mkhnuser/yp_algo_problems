@@ -1,21 +1,28 @@
-def get_parent_index(i):
-    return i // 2
+import math
 
 
-def sift_up(A, i) -> int:
-    p = get_parent_index(i)
+def sift_up(heap, idx) -> int:
+    return recurse_sift_up(heap, idx)
 
-    if p == 0:
-        return i
 
-    parent_value = A[p]
-    current_value = A[i]
+def get_parent_index(index):
+    return math.floor((index) / 2)
 
-    if parent_value < current_value:
-        A[p], A[i] = A[i], A[p]
-        return sift_up(A, p)
 
-    return i
+def recurse_sift_up(heap, index):
+    if index == 1:
+        return index
+
+    parent_index = get_parent_index(index)
+    parent_value = heap[parent_index]
+    current_value = heap[index]
+
+    if current_value > parent_value:
+        heap[index] = parent_value
+        heap[parent_index] = current_value
+        index = recurse_sift_up(heap, parent_index)
+
+    return index
 
 
 def test():

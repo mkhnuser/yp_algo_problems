@@ -1,73 +1,110 @@
-def solve():
-    n, m = map(int, input().split())
+import sys
+from collections import defaultdict
 
-    # NOTE: Use only a half of a matrix because of a memory limit.
-    adjacency_matrix = []
-    for i in range(1, n + 1):
-        adjacency_matrix.append([False for _ in range(i)])
+
+def solve_recursively():
+    # NOTE: Hack your way through.
+    sys.setrecursionlimit(200000)
+    n, m = map(int, input().split())
+    mapping = defaultdict(list)
 
     for _ in range(m):
         u, v = map(int, input().split())
-        try:
-            adjacency_matrix[u - 1][v - 1] = True
-        except Exception:
-            pass
-
-        try:
-            adjacency_matrix[v - 1][u - 1] = True
-        except Exception:
-            pass
+        mapping[u].append(v)
+        mapping[v].append(u)
 
     s = int(input())
 
-    # NOTE:
-    # 4 4
-    # 3 2
-    # 4 3
-    # 1 4
-    # 1 2
-    # 3
-    # [
-    #     [False],
-    #     [True, False],
-    #     [False, True, False],
-    #     [True, False, True, False],
-    # ]
+    for value in mapping.values():
+        value.sort()
 
     colors = ["white" for _ in range(n)]
+    output_list = []
 
-    def start_dfs():
-        for index in range(n):
-            if colors[index] == "white":
-                dfs(index + 1)
+    def dfs(s, output_list, mapping, colors):
+        colors[s - 1] = "gray"
+        output_list.append(s)
 
-    def dfs(v):
-        # NOTE: v is the node value, but not its index!
-        colors[v - 1] = "gray"
+        for neighbor in mapping[s]:
+            if colors[neighbor - 1] == "white":
+                dfs(neighbor, output_list, mapping, colors)
 
-        print(v, end=" ")
+        colors[s - 1] = "black"
 
-        for i, w in enumerate(adjacency_matrix[v - 1], start=1):
-            if not w:
-                continue
+    dfs(s, output_list, mapping, colors)
+    print(*output_list)
 
-            if colors[i - 1] == "white":
-                dfs(i)
 
-        # NOTE: Also go over v - 1 column.
-        for i, row in enumerate(range(v - 1, n), start=1):
-            w = adjacency_matrix[row][v - 1]
+def solve_visited_set():
+    n, m = map(int, input().split())
+    mapping = defaultdict(list)
 
-            if not w:
-                continue
+    for _ in range(m):
+        u, v = map(int, input().split())
+        mapping[u].append(v)
+        mapping[v].append(u)
 
-            if colors[i - 1] == "white":
-                dfs(i)
+    s = int(input())
 
-        colors[v - 1] = "black"
+    for value in mapping.values():
+        value.sort()
 
-    dfs(s)
+    visited = set()
+    output_list = []
+
+    stack = [s]
+
+    while stack:
+        current = stack.pop()
+
+        if current in visited:
+            continue
+
+        output_list.append(current)
+        visited.add(current)
+
+        for neighbor in reversed(mapping[current]):
+            if neighbor not in visited:
+                stack.append(neighbor)
+
+    print(*output_list)
+
+
+def solve_if_elif_coloring():
+    n, m = map(int, input().split())
+    mapping = defaultdict(list)
+
+    for _ in range(m):
+        u, v = map(int, input().split())
+        mapping[u].append(v)
+        mapping[v].append(u)
+
+    s = int(input())
+
+    for value in mapping.values():
+        value.sort()
+
+    colors = ["white" for _ in range(n)]
+    output_list = []
+
+    stack = [s]
+
+    while stack:
+        current = stack.pop()
+        if colors[current - 1] == "white":
+            colors[current - 1] = "gray"
+            stack.append(current)
+            output_list.append(current)
+
+            for neighbor in reversed(mapping[current]):
+                if colors[neighbor - 1] == "white":
+                    stack.append(neighbor)
+
+        elif colors[current - 1] == "gray":
+            colors[current - 1] = "black"
+
+    print(*output_list)
 
 
 if __name__ == "__main__":
-    solve()
+    solve_if_elif_coloring()

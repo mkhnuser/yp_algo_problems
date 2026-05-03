@@ -1,35 +1,36 @@
-def sift_down(A, i) -> int:
-    lefty = get_left_child_index(i)
-    righty = get_right_child_index(i)
-
-    if lefty <= len(A) - 1 and A[lefty] > A[i]:
-        largest_index = lefty
-    else:
-        largest_index = i
-
-    if righty <= len(A) - 1 and A[righty] > A[largest_index]:
-        largest_index = righty
-
-    if largest_index != i:
-        A[i], A[largest_index] = A[largest_index], A[i]
-        return sift_down(A, largest_index)
-    else:
-        return i
+def sift_down(heap, idx) -> int:
+    index = idx
+    return recurse_sift_down(heap, index)
 
 
-def get_left_child_index(i):
-    return 2 * i
+def get_left_child_index(index):
+    return 2 * index
 
 
-def get_right_child_index(i):
-    return (2 * i) + 1
+def get_right_child_index(index):
+    return (2 * index) + 1
+
+
+def recurse_sift_down(heap, index) -> int:
+    largest_i = index
+    left_i = get_left_child_index(index)
+    right_i = get_right_child_index(index)
+
+    if left_i < len(heap) and heap[left_i] > heap[largest_i]:
+        largest_i = left_i
+    if right_i < len(heap) and heap[right_i] > heap[largest_i]:
+        largest_i = right_i
+
+    if largest_i != index:
+        heap[index], heap[largest_i] = heap[largest_i], heap[index]
+        return recurse_sift_down(heap, largest_i)
+
+    return index
 
 
 def test():
     sample = [-1, 12, 1, 8, 3, 4, 7]
-    res = sift_down(sample, 2)
-    print(res)
-    assert res == 5
+    assert sift_down(sample, 2) == 5
 
 
 if __name__ == "__main__":

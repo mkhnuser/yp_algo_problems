@@ -2,43 +2,37 @@ from collections import defaultdict
 from queue import Queue
 
 
-def solve():
+def find_max_distance():
     n, m = map(int, input().split())
     mapping = defaultdict(list)
 
     for _ in range(m):
         u, v = map(int, input().split())
-        mapping[v].append(u)
         mapping[u].append(v)
+        mapping[v].append(u)
 
     s = int(input())
 
-    colors = ["white" for _ in range(n)]
-    distances: list[None | int] = [None for _ in range(n)]
-    parents: list[None | int] = [None for _ in range(n)]
-
     q = Queue()
     q.put(s)
-    colors[s - 1] = "gray"
+    colors = ["white" for _ in range(n)]
+    distances: list[int | None] = [None for _ in range(n)]
     distances[s - 1] = 0
-    parents[s - 1] = None
 
-    while not q.empty():
-        c = q.get()
+    while q.qsize() > 0:
+        v = q.get()
 
-        for adj in mapping[c]:
-            if not colors[adj - 1] == "white":
-                continue
+        for neighbor in mapping[v]:
+            if colors[neighbor - 1] == "white":
+                colors[neighbor - 1] = "grey"
+                distances[neighbor - 1] = distances[v - 1] + 1
+                q.put(neighbor)
 
-            q.put(adj)
-            colors[adj - 1] = "gray"
-            distances[adj - 1] = distances[c - 1] + 1
-            parents[adj - 1] = c
+        colors[v - 1] = "black"
+        q.task_done()
 
-        colors[c - 1] = "black"
-
-    print(max(distances))
+    print(max(filter(lambda x: x is not None, distances)))
 
 
 if __name__ == "__main__":
-    solve()
+    find_max_distance()
