@@ -1,41 +1,43 @@
-from collections import defaultdict
-from queue import Queue
+from collections import deque
 
 
-def bfs_impl():
+def solve():
     n, m = map(int, input().split())
-    mapping = defaultdict(list)
+    mapping = {}
 
     for _ in range(m):
-        u, v = map(int, input().split())
-        mapping[u].append(v)
+        v, u = map(int, input().split())
+
+        if v not in mapping:
+            mapping[v] = []
         mapping[v].append(u)
+
+        if u not in mapping:
+            mapping[u] = []
+        mapping[u].append(v)
 
     s = int(input())
 
     for value in mapping.values():
         value.sort()
 
-    q = Queue()
-    q.put(s)
-    colors = ["white" for _ in range(n)]
-    output = []
+    output_list = []
+    explored = [False] * n
+    explored[s - 1] = True
+    d = deque()
+    d.append(s)
 
-    while q.qsize() > 0:
-        v = q.get()
-        output.append(v)
+    while len(d) > 0:
+        c = d.popleft()
+        output_list.append(c)
 
-        for neighbor in mapping[v]:
-            if colors[neighbor - 1] == "white":
-                colors[neighbor - 1] = "grey"
-                # NOTE: Draw a square and understand why this setting is important.
-                q.put(neighbor)
+        for neighbor in mapping.get(c, []):
+            if not explored[neighbor - 1]:
+                explored[neighbor - 1] = True
+                d.append(neighbor)
 
-        colors[v - 1] = "black"
-        q.task_done()
-
-    print(*output)
+    return output_list
 
 
 if __name__ == "__main__":
-    bfs_impl()
+    print(*solve())
