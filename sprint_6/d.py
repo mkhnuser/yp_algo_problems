@@ -22,6 +22,10 @@ def solve():
         value.sort()
 
     output_list = []
+    # NOTE: Alternatively, a white-gray-black coloring can be used.
+    # White color: no information about a node;
+    # Gray color: a node has been planned to be visited;
+    # Black color: a node has been processed.
     explored = [False] * n
     explored[s - 1] = True
     d = deque()
